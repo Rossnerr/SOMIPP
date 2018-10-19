@@ -1,0 +1,146 @@
+org 7C00h
+           
+jmp start
+    str1 db 'Int 10h AH 0Eh VM'
+    str2 db 'Int 10h AH 0Ah VM'
+    str3 db 'Int 10h AH 09h VM'
+    str4 db 'Int 10h AH 13h AL 01h VM'        
+    str5 db 'Int 10h AH 13h AL 00h VM'
+    str6 db 'I', 0EH, 'n', 0EH, 't', 0EH, ' ', 0EH, '1', 0EH, '0', 0EH, 'h', 0EH, ' ', 0Eh, 'A', 0EH, 'H', 0EH, ' ', 0EH, '1', 0EH, '3', 0EH, 'h', 0EH, ' ', 0EH, 'A', 0EH, 'L', 0EH, ' ', 0EH, '0', 0EH, '2', 0EH, 'h', 0EH, ' ', 0EH, 'V', 0EH, 'M', 0EH
+    str7 db 'I', 0DH, 'n', 0DH, 't', 0DH, ' ', 0DH, '1', 0DH, '0', 0DH, 'h', 0DH, ' ', 0Dh, 'A', 0DH, 'H', 0DH, ' ', 0DH, '1', 0DH, '3', 0DH, 'h', 0DH, ' ', 0DH, 'A', 0DH, 'L', 0DH, ' ', 0DH, '0', 0DH, '3', 0DH, 'h', 0DH, ' ', 0DH, 'V', 0DH, 'M', 0DH
+    str8 db 'V', 0BH, 'i', 0BH, 'd', 0BH, 'e', 0BH, 'o', 0BH, ' ', 0BH, 'M', 0BH, 'e', 0Bh, 'm', 0BH, 'o', 0BH, 'r', 0BH, 'y', 0BH, ' ', 0BH, 'V', 0BH, 'M', 0BH
+    
+start:    
+    ;set the initial position of the cursor
+    mov dh, 2
+    mov dl, 10
+    mov ah, 2
+    int 10h
+           
+    mov si, -1       
+    mov cx, 17 
+    
+    Method1:
+        inc si
+        mov al, str1[si]
+        mov ah, 0eh
+        int 10h  
+    Loop Method1
+    
+    ;set the cursor at the second position
+    mov dh, 4
+    mov dl, 10
+    mov ah, 2
+    int 10h  
+    
+    mov si, -1 
+    mov di, 18
+    mov cx, 18
+    
+    Method2: 
+        inc si         
+        mov al, str2[si]
+        mov cx, 1
+        mov ah, 0ah
+        int 10h
+        
+        dec di
+        mov cx, di
+        
+        inc dl
+        mov ah, 2
+        int 10h
+    Loop Method2  
+    
+    ;set the appropriate cursor position
+    mov dh, 6
+    mov dl, 10
+    mov ah, 2
+    int 10h
+    
+    mov si, -1 ;used to go through str3
+    mov di, 18 ;used to stop the loop
+    mov cx, 18 ;used to stop the loop
+    
+    Method3: 
+        inc si         
+        mov al, str3[si]
+        mov bl, 1110b
+        mov cx, 1
+        mov ah, 09h
+        int 10h
+        
+        dec di
+        mov cx, di
+        
+        inc dl
+        mov ah, 2
+        int 10h
+    Loop Method3
+    
+    jmp Method4
+    
+    Method4:
+        mov al, 01h
+	    mov bl, 0011_1011b
+	    mov cx, 24
+	    mov dh, 8
+	    mov dl, 10	    
+	    mov bp, offset str4
+	    mov ah, 13h
+	    int 10h    	    
+	    
+    jmp Method5
+    
+    Method5:
+        mov al, 00h 
+        mov bl, 1100b
+        mov cx, 24   
+        mov dh, 10
+        mov dl, 10
+        mov bp, offset str5
+        mov ah, 13h
+        int 10h 
+        
+    jmp Method6 
+    
+    Method6:
+        mov al, 02h
+        mov cx, 24
+        mov dh, 12
+        mov dl, 10
+        mov bp, offset str6
+        mov ah, 13h
+        int 10h  
+        
+    jmp Method7
+    
+    Method7:
+        mov al, 03h
+        mov cx, 24
+        mov dh, 14
+        mov dl, 10
+        mov bp, offset str7
+        mov ah, 13h
+        int 10h  
+        
+        mov dh, 16
+        mov dl, 10
+        mov ah, 02h
+        int 10h
+        
+        
+        mov ax, 0b800h
+        mov es, ax
+        mov di, 2580
+        
+        mov cx, 30
+        mov si, 0
+        Met8:
+            mov al, str8[si]
+            mov es:[di], al
+            inc si
+            add di, 1
+        Loop Met8  
+                
+ret  
